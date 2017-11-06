@@ -1,6 +1,6 @@
 function Main() {
 
-    var supportedGameArray = [730, 570, 578080];
+    var supportedGameArray = [730, 570, 578080, 433850];
 
     function Initialise() {
         $(supportedGameArray).each(function(idx, el) {
