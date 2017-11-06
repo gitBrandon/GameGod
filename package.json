@@ -18,6 +18,7 @@
   "homepage": "https://github.com/gitBrandon/GameGod#readme",
   "devDependencies": {
     "bootstrap": "^3.3.7",
+    "express": "^4.16.2",
     "jquery": "^3.2.1",
     "oidc-client": "^1.4.1"
   }
