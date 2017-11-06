@@ -1,6 +1,6 @@
 function Main() {
 
-    var supportedGameArray = [730, 570, 578080, 433850];
+    var supportedGameArray = [730, 570, 578080, 433850, 386360, 440, 252950, 107410, 476600];
 
     function Initialise() {
         $(supportedGameArray).each(function(idx, el) {
@@ -31,7 +31,7 @@ function Main() {
         var html = `
         <div class="col-sm-4">
             <div class="panel panel-primary">
-                <div class="panel-heading">${gameName}</div>
+                <div class="panel-heading" style="background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%); text-align: center;">${gameName}</div>
                 <div class="panel-body"><img src="${gameImage}" class="img-responsive" style="width:100%" alt="Image"></div>
                 <div class="panel-footer"></div>
             </div>
