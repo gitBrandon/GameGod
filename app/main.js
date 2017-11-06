@@ -10,10 +10,9 @@ function Main() {
 
     function GetSupportedGameDetails(gameid, callback) {
         $.ajax({
-
-            url: 'http://store.steampowered.com/api/appdetails?appids=' + gameid,
+            url: 'http://localhost:4000/steam/' + gameid,
             type: 'GET',
-            headers: { 'Access-Control-Allow-Origin': '*' },
+            dataType : 'JSON',
             success: function(data) {
                 callback(data);
             }
@@ -21,7 +20,7 @@ function Main() {
 
         function setHeader() {
         	xhr.setRequestHeader('Authorization', token);
-        } 
+        }
     }
 
     function BuildGameBlocks(data) {

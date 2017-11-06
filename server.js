@@ -1,9 +1,18 @@
 var express = require('express');
+var cors = require('cors')
 var app = express();
 
+app.use(cors())
+
 app.get('/', function(httpRequest, httpResponse) {
-    httpResponse.send('Hello, World!');
+  httpResponse.send('Hello, World!');
 });
+
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 
 // ```
 //
@@ -21,8 +30,8 @@ app.get('/', function(httpRequest, httpResponse) {
 // ```js
 
 app.get('/hello/:name', function(httpRequest, httpResponse) {
-    var name = httpRequest.params.name;
-    httpResponse.send('Hello, ' + name + '!');
+  var name = httpRequest.params.name;
+  httpResponse.send('Hello, ' + name + '!');
 });
 
 // ```
@@ -45,15 +54,16 @@ var request = require('request');
 // (http://localhost:4000/steam/civ5achievements).
 //
 
-app.get('/steam/dota', function(httpRequest, httpResponse) {
-    // Calculate the Steam API URL we want to use
-    var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=570';
-    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
-        // Once we get the body of the steamHttpResponse, send it to our client
-        // as our own httpResponse
-        httpResponse.setHeader('Content-Type', 'application/json');
-        httpResponse.send(steamHttpBody);
-    });
+app.get('/steam/:appid', function(httpRequest, httpResponse) {
+  // Calculate the Steam API URL we want to use
+  var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
+  request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+    console.log(steamHttpBody)
+    // Once we get the body of the steamHttpResponse, send it to our client
+    // as our own httpResponse
+    httpResponse.setHeader('Content-Type', 'application/json');
+    httpResponse.json(steamHttpBody);
+  });
 });
 
 // ```
@@ -67,14 +77,14 @@ app.get('/steam/dota', function(httpRequest, httpResponse) {
 // ```js
 
 app.get('/steam/game/:appid/achievements', function(httpRequest, httpResponse) {
-    // Calculate the Steam API URL we want to use
-    var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
-        'v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=' +
-        httpRequest.params.appid;
-    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
-        httpResponse.setHeader('Content-Type', 'application/json');
-        httpResponse.send(steamHttpBody);
-    });
+  // Calculate the Steam API URL we want to use
+  var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
+    'v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=' +
+    httpRequest.params.appid;
+  request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+    httpResponse.setHeader('Content-Type', 'application/json');
+    httpResponse.send(steamHttpBody);
+  });
 });
 
 // ```
@@ -165,12 +175,12 @@ app.use(bodyParser.text());
 // ```js
 
 app.post('/frank-blog', function(httpRequest, httpResponse) {
-    console.log(httpRequest.body);
-    // We need to respond to the request so the web browser knows
-    // something happened.
-    // If you've got nothing better to say, it's considered good practice to
-    // return the original POST body.
-    httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
+  console.log(httpRequest.body);
+  // We need to respond to the request so the web browser knows
+  // something happened.
+  // If you've got nothing better to say, it's considered good practice to
+  // return the original POST body.
+  httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
 });
 
 // ```
