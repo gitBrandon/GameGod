@@ -33,11 +33,17 @@ function Main() {
             <div class="panel panel-primary">
                 <div class="panel-heading" style="background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%); text-align: center;">${gameName}</div>
                 <div class="panel-body"><img src="${gameImage}" class="img-responsive" style="width:100%" alt="Image"></div>
-                <div class="panel-footer"></div>
+                <div class="panel-footer">
+                    <button class="btn btn-primary" id="stats_${gameid}">Stats</button>
+                </div>
             </div>
         </div>`;
 
-        $("#gameHolder").append(html)
+        $("#mainpage").append(html);
+
+        $("#stats_" + gameid).on("click", function() {
+            $("#mainpage").load("games/" + gameid + "/stats/stats.html");
+        })
     }
 
     return {
