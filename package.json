@@ -1,0 +1,24 @@
+{
+  "name": "gamegod",
+  "version": "1.0.0",
+  "description": "game website",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitBrandon/GameGod.git"
+  },
+  "author": "b&b",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gitBrandon/GameGod/issues"
+  },
+  "homepage": "https://github.com/gitBrandon/GameGod#readme",
+  "devDependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1",
+    "oidc-client": "^1.4.1"
+  }
+}
