@@ -22,9 +22,11 @@ function Stats() {
         var gameData = tmpJSON[gameid];
         var gameName = gameData.data.name;
         var gameImage = gameData.data.header_image;
+        var gameBackgroundImage = gameData.data.background;
 
         $("#game_name").text(gameName);
         $("#game_image").attr('src', gameImage);
+        $('body').css('background-image', 'url(' + gameBackgroundImage + ')');
     }
 
     return {

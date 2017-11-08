@@ -6,7 +6,7 @@ var url = require('url');
 app.use(cors())
 
 app.get('/', function(httpRequest, httpResponse) {
-  httpResponse.send('Hello, World!');
+    httpResponse.send('Hello, World!');
 });
 
 // app.use(function(req, res, next) {
@@ -31,8 +31,8 @@ app.get('/', function(httpRequest, httpResponse) {
 // ```js
 
 app.get('/hello/:name', function(httpRequest, httpResponse) {
-  var name = httpRequest.params.name;
-  httpResponse.send('Hello, ' + name + '!');
+    var name = httpRequest.params.name;
+    httpResponse.send('Hello, ' + name + '!');
 });
 
 // ```
@@ -56,16 +56,35 @@ var request = require('request');
 //
 
 app.get('/steam/:appid', function(httpRequest, httpResponse) {
-  // Calculate the Steam API URL we want to use
-  var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
-  request.get(url, function(error, steamHttpResponse, steamHttpBody) {
-    console.log(steamHttpBody)
-    // Once we get the body of the steamHttpResponse, send it to our client
-    // as our own httpResponse
-    httpResponse.setHeader('Content-Type', 'application/json');
-    httpResponse.json(steamHttpBody);
-  });
+    // Calculate the Steam API URL we want to use
+    var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.json(steamHttpBody);
+    });
 });
+
+app.get('/dota2api/teams/:teamid', function(httpRequest, httpResponse) {
+    var url = 'https://api.opendota.com/api/teams/' + httpRequest.params.teamid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.json(steamHttpBody);
+    });
+})
+
+app.get('/dota2api/leauge/:leaugeid', function(httpRequest, httpResponse) {
+    var url = 'https://api.steampowered.com/IEconDOTA2_' + httpRequest.params.leaugeid + '/GetItemIconPath/v1/?key=70BC962ADBE34037C4C054ADD373EF6C&format=json&iconname=subscriptions_sdl';
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.json(steamHttpBody);
+    });
+})
 
 app.get('/steam/:appid', function(httpRequest, httpResponse) {
     // Calculate the Steam API URL we want to use
@@ -74,8 +93,6 @@ app.get('/steam/:appid', function(httpRequest, httpResponse) {
     request.get(url, function(error, steamHttpResponse, steamHttpBody) {
         // Once we get the body of the steamHttpResponse, send it to our client
         // as our own httpResponse
-
-        console.log(steamHttpBody);
 
         httpResponse.setHeader('Content-Type', 'application/json');
         httpResponse.send(steamHttpBody);
@@ -93,14 +110,14 @@ app.get('/steam/:appid', function(httpRequest, httpResponse) {
 // ```js
 
 app.get('/steam/game/:appid/achievements', function(httpRequest, httpResponse) {
-  // Calculate the Steam API URL we want to use
-  var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
-    'v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=' +
-    httpRequest.params.appid;
-  request.get(url, function(error, steamHttpResponse, steamHttpBody) {
-    httpResponse.setHeader('Content-Type', 'application/json');
-    httpResponse.send(steamHttpBody);
-  });
+    // Calculate the Steam API URL we want to use
+    var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
+        'v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=' +
+        httpRequest.params.appid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.send(steamHttpBody);
+    });
 });
 
 // ```
@@ -191,17 +208,152 @@ app.use(bodyParser.text());
 // ```js
 
 app.post('/frank-blog', function(httpRequest, httpResponse) {
-  console.log(httpRequest.body);
-  // We need to respond to the request so the web browser knows
-  // something happened.
-  // If you've got nothing better to say, it's considered good practice to
-  // return the original POST body.
-  httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
+    // We need to respond to the request so the web browser knows
+    // something happened.
+    // If you've got nothing better to say, it's considered good practice to
+    // return the original POST body.
+    httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
 });
 
 
 app.get('/adduser/:username/:password', function(req, res) {
+    var sql = require('mssql');
 
+    var config = {
+        user: 'sa',
+        password: 'geheim',
+        server: 'localhost\\sqlexpress',
+        database: 'GameGod'
+    };
+
+    var Username = req.params.username;
+    var Password = req.params.password;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `INSERT INTO [User] (Username, Password) VALUES ('` + Username + `', '` + Password + `')`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
+
+app.get('/getuser/:username', function(req, res) {
+    var sql = require('mssql');
+
+    var config = {
+        user: 'sa',
+        password: 'geheim',
+        server: 'localhost\\sqlexpress',
+        database: 'GameGod'
+    };
+
+    var Username = req.params.username;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `SELECT * FROM [User] WHERE Username = '` + Username + `'`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
+
+app.get('/login/:username/:password', function(req, res) {
+    var sql = require('mssql');
+
+    var config = {
+        user: 'sa',
+        password: 'geheim',
+        server: 'localhost\\sqlexpress',
+        database: 'GameGod'
+    };
+
+    var Username = req.params.username;
+    var Password = req.params.password;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `SELECT * FROM [User] WHERE Username = '` + Username + `' AND Password = '` + Password + `'`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+})
+
+app.get('/getusers', function(req, res) {
+    var sql = require('mssql');
+
+    var config = {
+        user: 'sa',
+        password: 'geheim',
+        server: 'localhost\\sqlexpress',
+        database: 'GameGod'
+    };
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `SELECT * FROM [User]`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
+
+app.get('/deleteuser/:id', function(req, res) {
+    var sql = require('mssql');
+
+    var config = {
+        user: 'sa',
+        password: 'geheim',
+        server: 'localhost\\sqlexpress',
+        database: 'GameGod'
+    };
+
+    var ID = req.params.id;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `DELETE FROM [User] WHERE ID = ` + ID;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
 });
 
 var port = 4000;

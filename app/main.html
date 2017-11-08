@@ -5,13 +5,14 @@
     <title>Game God</title>
     <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="../node_modules/bootstrap/dist/css/bootstrap-theme.css">
+    <link rel="stylesheet" type="text/css" href="../node_modules/font-awesome/css/font-awesome.css">
     <script src="../node_modules/jquery/dist/jquery.js"></script>
     <script src="../node_modules/oidc-client/dist/oidc-client.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script src="main.js"></script>
 </head>
 
-<body>
+<body style="background-color: #000000e0; font-family: unset;">
     <nav class="navbar navbar-inverse">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -20,19 +21,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Logo</a>
+                <a class="navbar-brand" href="#">Game God</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">Products</a></li>
-                    <li><a href="#">Deals</a></li>
-                    <li><a href="#">Stores</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li id="games" class="list-item"><a href="#">Games</a></li>
+                    <li class="list-item"><a href="#">Predictions</a></li>
+                    <li class="list-item"><a href="#">Trades</a></li>
+                    <li class="list-item"><a href="#">Stats</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Your Account</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-shopping-cart"></span> Cart</a></li>
+                    <li><a href="#" id="user_name"><span class="fa fa-user"></span> </a></li>
                 </ul>
             </div>
         </div>
