@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "87059910361",
+    "firebase_url": "https://gamegod-67d61.firebaseio.com",
+    "project_id": "gamegod-67d61",
+    "storage_bucket": "gamegod-67d61.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87059910361:android:b5f50b8ba6a8a753",
+        "android_client_info": {
+          "package_name": "com.gamegod"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87059910361-e126pijdhjt9o0a192ipng5jtmkh6ddl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBByJ6j6UVSEkBQaSlrfKpWEJS9yOoXXFI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

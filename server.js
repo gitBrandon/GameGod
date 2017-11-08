@@ -1,11 +1,86 @@
 var express = require('express');
 var cors = require('cors')
+var session = require('express-session');
+var passport = require('passport');
+var FirebaseStore = require('connect-firebase')(session);
 var app = express();
 
+app.use(session({
+  secret: 'YOURSESSIONSECRETKEY', // Change this to anything else
+  resave: false,
+  saveUninitialized: true
+}));
 app.use(cors())
 
-app.get('/', function(httpRequest, httpResponse) {
-  httpResponse.send('Hello, World!');
+var OpenIDStrategy = require('passport-openid').Strategy;
+var SteamStrategy = new OpenIDStrategy({
+    // OpenID provider configuration
+    providerURL: 'http://steamcommunity.com/openid',
+    stateless: true,
+    // How the OpenID provider should return the client to us
+    returnURL: 'http://localhost:4000/auth/openid/return',
+    realm: 'http://localhost:4000/',
+  },
+  // This is the "validate" callback, which returns whatever object you think
+  // should represent your user when OpenID authentication succeeds.  You
+  // might need to create a user record in your database at this point if
+  // the user doesn't already exist.
+  function(identifier, done) {
+    // The done() function is provided by passport.  It's how we return
+    // execution control back to passport.
+    // Your database probably has its own asynchronous callback, so we're
+    // faking that with nextTick() for demonstration.
+    process.nextTick(function() {
+      // Retrieve user from Firebase and return it via done().
+      var user = {
+        identifier: identifier,
+        // Extract the Steam ID from the Claimed ID ("identifier")
+        steamId: identifier.match(/\d+$/)[0]
+      };
+      // In case of an error, we invoke done(err).
+      // If we cannot find or don't like the login attempt, we invoke
+      // done(null, false).
+      // If everything went fine, we invoke done(null, user).
+      return done(null, user);
+    });
+  });
+passport.use(SteamStrategy);
+
+passport.serializeUser(function(user, done) {
+    done(null, user.identifier);
+});
+
+passport.deserializeUser(function(identifier, done) {
+    // For this demo, we'll just return an object literal since our user
+    // objects are this trivial.  In the real world, you'd probably fetch
+    // your user object from your database here.
+    done(null, {
+        identifier: identifier,
+        steamId: identifier.match(/\d+$/)[0]
+    });
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/', function(request, response) {
+    response.write('<!DOCTYPE html>')
+    if (request.user) {
+        response.write(request.session.passport &&
+            JSON.stringify(request.user) || 'None');
+        response.write('<form action="/auth/logout" method="post">');
+        response.write('<input type="submit" value="Log Out"/></form>');
+    } else {
+        if (request.query.steamid) {
+            response.write('Not logged in.');
+        }
+        response.write('<form action="/auth/openid" method="post">');
+        response.write(
+            '<input name="submit" type="image" src="http://steamcommunity-a.' +
+            'akamaihd.net/public/images/signinthroughsteam/sits_small.png" ' +
+            'alt="Sign in through Steam"/></form>');
+    }
+    response.send();
 });
 
 // app.use(function(req, res, next) {
@@ -43,17 +118,6 @@ app.get('/hello/:name', function(httpRequest, httpResponse) {
 
 var request = require('request');
 
-// Put it all together
-// -------------------
-//
-// Now we can try something a little fancier.  We can use the `request` package
-// to send our own HTTP requests to third parties.  We can use the third-party's
-// response to help construct our own response.
-//
-// Open a web browser to [http://localhost:4000/steam/civ5achievements]
-// (http://localhost:4000/steam/civ5achievements).
-//
-
 app.get('/steam/:appid', function(httpRequest, httpResponse) {
   // Calculate the Steam API URL we want to use
   var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
@@ -66,6 +130,24 @@ app.get('/steam/:appid', function(httpRequest, httpResponse) {
   });
 });
 
+app.post('/auth/openid', passport.authenticate('openid'), function(request, response) {
+
+});
+
+app.get('/auth/openid/return', passport.authenticate('openid'),
+    function(request, response) {
+        if (request.user) {
+          console.log(response);
+        } else {
+        }
+});
+
+app.post('/auth/logout', function(request, response) {
+    request.logout();
+    // After logging out, redirect the user somewhere useful.
+    // Where they came from or the site root are good choices.
+    response.redirect(request.get('Referer') || '/')
+});
 // ```
 //
 // Combine the previous two techniques (variables in paths, request package).

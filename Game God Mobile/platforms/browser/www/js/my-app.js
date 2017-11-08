@@ -14,7 +14,7 @@ var mainView = myApp.addView('.view-main', {
   dynamicNavbar: false
 });
 
-var leftNavBar = myApp.addView('.custom-panel-left');
+// var leftNavBar = myApp.addView('.custom-panel-left');
 
 // Handle Cordova Device Ready Event
 $$(document).on('deviceready', function() {
@@ -30,12 +30,24 @@ myApp.onPageInit('about', function(page) {
   myApp.alert('Here comes About page');
 })
 
-$$('.open-left-panel').on('click', function(e) {
-  // 'left' position to open Left panel
-  myApp.openPanel('left');
+myApp.onPageInit('GamesHome', function(page) {
+  // Do something here for "about" page
+  myApp.closePanel();
+  var s = document.getElementsByTagName('script')[0];
+  var sc = document.createElement('script');
+  sc.type = 'text/javascript';
+  sc.async = false;
+  sc.src = 'Menu/Games/GamesHome.js';
+  s.parentNode.insertBefore(sc, s);
 });
 
-$$('.close-left-panel').on('click', function(e) {
-  // 'right' position to open Right panel
-  myApp.closePanel('right');
+myApp.onPageInit('730', function(page) {
+  // Do something here for "about" page
+  myApp.closePanel();
+  var s = document.getElementsByTagName('script')[0];
+  var sc = document.createElement('script');
+  sc.type = 'text/javascript';
+  sc.async = false;
+  sc.src = 'Menu/Games/730/730.js';
+  s.parentNode.insertBefore(sc, s);
 });

@@ -8,7 +8,7 @@
         Apache Cordova Team
     </author>
     <content src="index.html" />
-    <access origin="*" />
+    <access origin="https://steamcommunity.com/"/>
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -19,7 +19,7 @@
         <preference name="android-minSdkVersion" value="14" />
         <allow-intent href="market:*" />
     </platform>
-    <platform name="ios">
+    <platform name="android">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
         <preference name="BackupWebStorage" value="none" />
