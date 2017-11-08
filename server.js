@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var url = require('url');
 
 app.get('/', function(httpRequest, httpResponse) {
     httpResponse.send('Hello, World!');
@@ -46,11 +47,29 @@ var request = require('request');
 //
 
 app.get('/steam/dota', function(httpRequest, httpResponse) {
+
+    console.log(httpRequest);
+
     // Calculate the Steam API URL we want to use
-    var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=570';
+    var url = 'http://store.steampowered.com/api/appdetails?appids=570';
     request.get(url, function(error, steamHttpResponse, steamHttpBody) {
         // Once we get the body of the steamHttpResponse, send it to our client
         // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.send(steamHttpBody);
+    });
+});
+
+app.get('/steam/:appid', function(httpRequest, httpResponse) {
+    // Calculate the Steam API URL we want to use
+
+    var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+
+        console.log(steamHttpBody);
+
         httpResponse.setHeader('Content-Type', 'application/json');
         httpResponse.send(steamHttpBody);
     });
@@ -173,28 +192,11 @@ app.post('/frank-blog', function(httpRequest, httpResponse) {
     httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
 });
 
-// ```
-//
-//
-// Start the server
-// ----------------
-// Finally, we just add a few lines at the end of the file to start up the Express
-// server.
-//
-// ```js
+
+app.get('/adduser/:username/:password', function(req, res) {
+
+});
 
 var port = 4000;
 var server = app.listen(port);
 console.log('Listening on port ' + port);
-
-// ```
-//
-// That's it.  Just run this file ([`server.js`]
-// (https://gist.github.com/johnchristopherjones/c6c8928d2ffa5ccbda6a))
-// with the command `node server.js`.
-//
-// To stop the server, return to the terminal and type `⌃C` (control-c)
-// in the terminal.
-//
-// To make changes to the server, edit server.js.  Stop the server with ⌃C
-// and start it up again with `node server.js`.
