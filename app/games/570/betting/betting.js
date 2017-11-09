@@ -40,7 +40,7 @@ function Betting() {
     }
 
     function ProcessMatchData(data) {
-        for (var i = 0; i < 12; i++) {
+        for (var i = 0; i < 7; i++) {
         	ExtractAndBuild(data[i]);
         }
     }
@@ -81,18 +81,18 @@ function Betting() {
                 <div class="panel-heading" style="text-align: center; border-color: black; background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%);">
                 	<h4>${data.matchData.league_name}</h4>
                 </div>
-                <div class="panel-body" style="color: black; padding: 0px;">
+                <div class="panel-body" style="color: white; padding: 0px;">
                 	<div class="radiant-side col-xs-6" style="padding: 5px;">
                 		<h4>${radData.name}</h4>
-                		<img style="display: inline; width: 100%; height: 180px;" class="img-responsive" src="${radData.logo_url}">
+                		<img style="display: inline; width: 100%; height: 180px; border: 1px solid black; border-radius: 8px; background: white;" class="img-responsive" src="${radData.logo_url}">
                 	</div>
                 	<div class="dire-side col-xs-6" " style="padding: 5px;">
                 		<h4>${direData.name}</h4>
-                		<img style="display: inline; width: 100%; height: 180px;" class="img-responsive" src="${direData.logo_url}">
+                		<img style="display: inline; width: 100%; height: 180px; border: 1px solid black; border-radius: 8px; background: white;" class="img-responsive" src="${direData.logo_url}">
                 	</div>
                 </div>
-                <div class="panel-footer" style="background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%); border-color: black; background-color: black;">
-                	<p>${new Date(data.matchData.start_time)}</p>
+                <div class="panel-footer" style="padding-left: 40%; display: -webkit-box; background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%); border-color: black; background-color: black;">
+                    <button class="btn btn-primary">Make Prediction</button>
                 </div>
             </div>
         </div>`;

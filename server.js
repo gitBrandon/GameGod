@@ -189,7 +189,8 @@ app.use('/', express.static('public'));
 
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.text());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // ```
 //
@@ -215,16 +216,30 @@ app.post('/frank-blog', function(httpRequest, httpResponse) {
     httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
 });
 
+var config = {
+    user: 'sa',
+    password: '740513',
+    server: 'localhost\\sqlexpress2016',
+    database: 'GameGod'
+};
+
+app.post('/api/users', function(req, res) {
+    var name = req.body.name;
+    var hobbyList = req.body.hobbies;
+    var hobbyString = "";
+
+    for(var hobby in hobbyList) {
+        hobbyString += hobbyList[hobby].name;
+        if(hobby != hobbyList.length - 1) {
+            hobbyString += ", ";
+        }
+    }
+
+    res.send("Hi my name is " + name + " and i like to " + hobbyString);
+});
 
 app.get('/adduser/:username/:password', function(req, res) {
     var sql = require('mssql');
-
-    var config = {
-        user: 'sa',
-        password: 'geheim',
-        server: 'localhost\\sqlexpress',
-        database: 'GameGod'
-    };
 
     var Username = req.params.username;
     var Password = req.params.password;
@@ -248,13 +263,6 @@ app.get('/adduser/:username/:password', function(req, res) {
 app.get('/getuser/:username', function(req, res) {
     var sql = require('mssql');
 
-    var config = {
-        user: 'sa',
-        password: 'geheim',
-        server: 'localhost\\sqlexpress',
-        database: 'GameGod'
-    };
-
     var Username = req.params.username;
 
     sql.connect(config, function() {
@@ -275,13 +283,6 @@ app.get('/getuser/:username', function(req, res) {
 
 app.get('/login/:username/:password', function(req, res) {
     var sql = require('mssql');
-
-    var config = {
-        user: 'sa',
-        password: 'geheim',
-        server: 'localhost\\sqlexpress',
-        database: 'GameGod'
-    };
 
     var Username = req.params.username;
     var Password = req.params.password;
@@ -305,13 +306,6 @@ app.get('/login/:username/:password', function(req, res) {
 app.get('/getusers', function(req, res) {
     var sql = require('mssql');
 
-    var config = {
-        user: 'sa',
-        password: 'geheim',
-        server: 'localhost\\sqlexpress',
-        database: 'GameGod'
-    };
-
     sql.connect(config, function() {
         var request = new sql.Request();
 
@@ -330,13 +324,6 @@ app.get('/getusers', function(req, res) {
 
 app.get('/deleteuser/:id', function(req, res) {
     var sql = require('mssql');
-
-    var config = {
-        user: 'sa',
-        password: 'geheim',
-        server: 'localhost\\sqlexpress',
-        database: 'GameGod'
-    };
 
     var ID = req.params.id;
 

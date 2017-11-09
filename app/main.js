@@ -51,7 +51,7 @@ function Main() {
                 <div class="panel-body" style="background-image: url(${gameBackgroundImage});"><img src="${gameImage}" class="img-responsive" style="width:100%" alt="Image"></div>
                 <div class="panel-footer" style="background-image: linear-gradient(to bottom, #3c3c3c 0%, #222 100%); border-color: black; background-color: black;">
                     <button class="btn btn-primary" id="stats_${gameid}">Stats <i class="glyphicon glyphicon-stats"></i></button>
-                    <button class="btn btn-primary" id="betting_${gameid}">Betting <i class="fa fa-money  "></i></button>
+                    <button class="btn btn-primary" id="betting_${gameid}">Predictions <i class="fa fa-money  "></i></button>
                     <button class="btn btn-primary" id="stats_${gameid}">Store <i class="fa fa-shopping-cart"></i></button>
                     <button class="btn btn-primary" id="stats_${gameid}">Trade <i class="fa fa-exchange"></i></button>
                 </div>
