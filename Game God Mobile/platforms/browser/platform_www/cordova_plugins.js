@@ -7,6 +7,14 @@ module.exports = [
         "clobbers": [
             "window.StatusBar"
         ]
+    },
+    {
+        "file": "plugins/com.rjfun.cordova.httpd/www/CorHttpd.js",
+        "id": "com.rjfun.cordova.httpd.CorHttpd",
+        "pluginId": "com.rjfun.cordova.httpd",
+        "clobbers": [
+            "cordova.plugins.CorHttpd"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -14,7 +22,8 @@ module.exports.metadata =
 {
     "cordova-plugin-whitelist": "1.2.2",
     "cordova-plugin-console": "1.0.7",
-    "cordova-plugin-statusbar": "1.0.1"
+    "cordova-plugin-statusbar": "1.0.1",
+    "com.rjfun.cordova.httpd": "0.9.2"
 }
 // BOTTOM OF METADATA
 });

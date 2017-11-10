@@ -15,6 +15,9 @@
         },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.gamegod"
+        },
+        "com.rjfun.cordova.httpd": {
+            "PACKAGE_NAME": "com.gamegod"
         }
     },
     "dependent_plugins": {},
@@ -26,11 +29,20 @@
             "clobbers": [
                 "window.StatusBar"
             ]
+        },
+        {
+            "file": "plugins/com.rjfun.cordova.httpd/www/CorHttpd.js",
+            "id": "com.rjfun.cordova.httpd.CorHttpd",
+            "pluginId": "com.rjfun.cordova.httpd",
+            "clobbers": [
+                "cordova.plugins.CorHttpd"
+            ]
         }
     ],
     "plugin_metadata": {
         "cordova-plugin-whitelist": "1.2.2",
         "cordova-plugin-console": "1.0.7",
-        "cordova-plugin-statusbar": "1.0.1"
+        "cordova-plugin-statusbar": "1.0.1",
+        "com.rjfun.cordova.httpd": "0.9.2"
     }
 }

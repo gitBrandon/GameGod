@@ -15,6 +15,9 @@
         },
         "cordova-plugin-statusbar": {
             "PACKAGE_NAME": "com.gamegod"
+        },
+        "com.rjfun.cordova.httpd": {
+            "PACKAGE_NAME": "com.gamegod"
         }
     },
     "dependent_plugins": {}
