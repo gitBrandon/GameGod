@@ -4,6 +4,7 @@ var session = require('express-session');
 var passport = require('passport');
 var FirebaseStore = require('connect-firebase')(session);
 var app = express();
+var url = require('url');
 
 app.use(session({
   secret: 'YOURSESSIONSECRETKEY', // Change this to anything else
@@ -12,42 +13,8 @@ app.use(session({
 }));
 app.use(cors())
 
-var OpenIDStrategy = require('passport-openid').Strategy;
-var SteamStrategy = new OpenIDStrategy({
-    // OpenID provider configuration
-    providerURL: 'http://steamcommunity.com/openid',
-    stateless: true,
-    // How the OpenID provider should return the client to us
-    returnURL: 'http://localhost:4000/auth/openid/return',
-    realm: 'http://localhost:4000/',
-  },
-  // This is the "validate" callback, which returns whatever object you think
-  // should represent your user when OpenID authentication succeeds.  You
-  // might need to create a user record in your database at this point if
-  // the user doesn't already exist.
-  function(identifier, done) {
-    // The done() function is provided by passport.  It's how we return
-    // execution control back to passport.
-    // Your database probably has its own asynchronous callback, so we're
-    // faking that with nextTick() for demonstration.
-    process.nextTick(function() {
-      // Retrieve user from Firebase and return it via done().
-      var user = {
-        identifier: identifier,
-        // Extract the Steam ID from the Claimed ID ("identifier")
-        steamId: identifier.match(/\d+$/)[0]
-      };
-      // In case of an error, we invoke done(err).
-      // If we cannot find or don't like the login attempt, we invoke
-      // done(null, false).
-      // If everything went fine, we invoke done(null, user).
-      return done(null, user);
-    });
-  });
-passport.use(SteamStrategy);
-
-passport.serializeUser(function(user, done) {
-    done(null, user.identifier);
+app.get('/', function(httpRequest, httpResponse) {
+    httpResponse.send('Hello, World!');
 });
 
 passport.deserializeUser(function(identifier, done) {
@@ -105,8 +72,8 @@ app.get('/', function(request, response) {
 // ```js
 
 app.get('/hello/:name', function(httpRequest, httpResponse) {
-  var name = httpRequest.params.name;
-  httpResponse.send('Hello, ' + name + '!');
+    var name = httpRequest.params.name;
+    httpResponse.send('Hello, ' + name + '!');
 });
 
 // ```
@@ -119,35 +86,49 @@ app.get('/hello/:name', function(httpRequest, httpResponse) {
 var request = require('request');
 
 app.get('/steam/:appid', function(httpRequest, httpResponse) {
-  // Calculate the Steam API URL we want to use
-  var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
-  request.get(url, function(error, steamHttpResponse, steamHttpBody) {
-    console.log(steamHttpBody)
-    // Once we get the body of the steamHttpResponse, send it to our client
-    // as our own httpResponse
-    httpResponse.setHeader('Content-Type', 'application/json');
-    httpResponse.json(steamHttpBody);
-  });
+    // Calculate the Steam API URL we want to use
+    var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.json(steamHttpBody);
+    });
 });
 
-app.post('/auth/openid', passport.authenticate('openid'), function(request, response) {
+app.get('/dota2api/teams/:teamid', function(httpRequest, httpResponse) {
+    var url = 'https://api.opendota.com/api/teams/' + httpRequest.params.teamid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.json(steamHttpBody);
+    });
+})
 
+app.get('/dota2api/leauge/:leaugeid', function(httpRequest, httpResponse) {
+    var url = 'https://api.steampowered.com/IEconDOTA2_' + httpRequest.params.leaugeid + '/GetItemIconPath/v1/?key=70BC962ADBE34037C4C054ADD373EF6C&format=json&iconname=subscriptions_sdl';
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.json(steamHttpBody);
+    });
+})
+
+app.get('/steam/:appid', function(httpRequest, httpResponse) {
+    // Calculate the Steam API URL we want to use
+
+    var url = 'http://store.steampowered.com/api/appdetails?appids=' + httpRequest.params.appid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        // Once we get the body of the steamHttpResponse, send it to our client
+        // as our own httpResponse
+
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.send(steamHttpBody);
+    });
 });
 
-app.get('/auth/openid/return', passport.authenticate('openid'),
-    function(request, response) {
-        if (request.user) {
-          console.log(response);
-        } else {
-        }
-});
-
-app.post('/auth/logout', function(request, response) {
-    request.logout();
-    // After logging out, redirect the user somewhere useful.
-    // Where they came from or the site root are good choices.
-    response.redirect(request.get('Referer') || '/')
-});
 // ```
 //
 // Combine the previous two techniques (variables in paths, request package).
@@ -159,14 +140,14 @@ app.post('/auth/logout', function(request, response) {
 // ```js
 
 app.get('/steam/game/:appid/achievements', function(httpRequest, httpResponse) {
-  // Calculate the Steam API URL we want to use
-  var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
-    'v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=' +
-    httpRequest.params.appid;
-  request.get(url, function(error, steamHttpResponse, steamHttpBody) {
-    httpResponse.setHeader('Content-Type', 'application/json');
-    httpResponse.send(steamHttpBody);
-  });
+    // Calculate the Steam API URL we want to use
+    var url = 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/' +
+        'v2/?key=52F69C7CE75FC1CAEAE21B70377C90B3&appid=' +
+        httpRequest.params.appid;
+    request.get(url, function(error, steamHttpResponse, steamHttpBody) {
+        httpResponse.setHeader('Content-Type', 'application/json');
+        httpResponse.send(steamHttpBody);
+    });
 });
 
 // ```
@@ -238,7 +219,8 @@ app.use('/', express.static('public'));
 
 var bodyParser = require('body-parser');
 
-app.use(bodyParser.text());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // ```
 //
@@ -257,36 +239,140 @@ app.use(bodyParser.text());
 // ```js
 
 app.post('/frank-blog', function(httpRequest, httpResponse) {
-  console.log(httpRequest.body);
-  // We need to respond to the request so the web browser knows
-  // something happened.
-  // If you've got nothing better to say, it's considered good practice to
-  // return the original POST body.
-  httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
+    // We need to respond to the request so the web browser knows
+    // something happened.
+    // If you've got nothing better to say, it's considered good practice to
+    // return the original POST body.
+    httpResponse.status(200).send('Posted today:\n\n' + httpRequest.body);
 });
 
-// ```
-//
-//
-// Start the server
-// ----------------
-// Finally, we just add a few lines at the end of the file to start up the Express
-// server.
-//
-// ```js
+var config = {
+    user: 'sa',
+    password: '740513',
+    server: 'localhost\\sqlexpress2016',
+    database: 'GameGod'
+};
+
+app.post('/api/users', function(req, res) {
+    var name = req.body.name;
+    var hobbyList = req.body.hobbies;
+    var hobbyString = "";
+
+    for(var hobby in hobbyList) {
+        hobbyString += hobbyList[hobby].name;
+        if(hobby != hobbyList.length - 1) {
+            hobbyString += ", ";
+        }
+    }
+
+    res.send("Hi my name is " + name + " and i like to " + hobbyString);
+});
+
+app.get('/adduser/:username/:password', function(req, res) {
+    var sql = require('mssql');
+
+    var Username = req.params.username;
+    var Password = req.params.password;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `INSERT INTO [User] (Username, Password) VALUES ('` + Username + `', '` + Password + `')`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
+
+app.get('/getuser/:username', function(req, res) {
+    var sql = require('mssql');
+
+    var Username = req.params.username;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `SELECT * FROM [User] WHERE Username = '` + Username + `'`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
+
+app.get('/login/:username/:password', function(req, res) {
+    var sql = require('mssql');
+
+    var Username = req.params.username;
+    var Password = req.params.password;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `SELECT * FROM [User] WHERE Username = '` + Username + `' AND Password = '` + Password + `'`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+})
+
+app.get('/getusers', function(req, res) {
+    var sql = require('mssql');
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `SELECT * FROM [User]`;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
+
+app.get('/deleteuser/:id', function(req, res) {
+    var sql = require('mssql');
+
+    var ID = req.params.id;
+
+    sql.connect(config, function() {
+        var request = new sql.Request();
+
+        var query = `DELETE FROM [User] WHERE ID = ` + ID;
+
+        request.query(query, function(err, recordSet) {
+            if (err) {
+                console.log(err);
+            }
+
+            res.send(recordSet);
+            sql.close();
+        })
+    })
+});
 
 var port = 4000;
 var server = app.listen(port);
 console.log('Listening on port ' + port);
-
-// ```
-//
-// That's it.  Just run this file ([`server.js`]
-// (https://gist.github.com/johnchristopherjones/c6c8928d2ffa5ccbda6a))
-// with the command `node server.js`.
-//
-// To stop the server, return to the terminal and type `⌃C` (control-c)
-// in the terminal.
-//
-// To make changes to the server, edit server.js.  Stop the server with ⌃C
-// and start it up again with `node server.js`.
